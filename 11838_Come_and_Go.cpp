@@ -1,0 +1,87 @@
+#include<stdio.h>
+#include<string.h>
+#include<math.h>
+#include<string>
+#include<vector>
+#include<map>
+#include<algorithm>
+#include<iostream>
+#include<queue>
+#include<stack>
+using namespace std;
+#define PI 2 * acos (0.0)
+
+int visit[2010],n,m;
+vector<int>g[1010],gr[1010];
+stack<int>st;
+
+void dfsf(int u)
+{
+    visit[u]=1;
+    for(int i=0;i<g[u].size();i++)
+    {
+        int v=g[u][i];
+        if(visit[v]==0)
+            dfsf(v);
+    }
+    st.push(u);
+}
+void dfsr(int u)
+{
+    visit[u]=0;
+    for(int i=0;i<gr[u].size();i++)
+    {
+        int v=gr[u][i];
+        if(visit[v])
+            dfsr(v);
+    }
+}
+int main()
+{
+    int i,j,group,a,b,c;
+
+    while(scanf("%d %d",&n,&m) && n+m)
+    {
+
+        for(i=0;i<m;i++)
+        {
+            scanf("%d %d %d",&a,&b,&c);
+
+            g[a].push_back(b);
+            gr[b].push_back(a);
+            if(c==2)
+            {
+                g[b].push_back(a);
+                gr[a].push_back(b);
+            }
+
+        }
+        memset(visit,0,sizeof(visit));
+        for(i=1;i<=n;i++)
+            if(visit[i]==0)
+                dfsf(i);
+
+        group=0;
+        while(!st.empty())
+        {
+            i=st.top();st.pop();
+            if(visit[i])
+            {
+                dfsr(i);
+                group++;
+            }
+        }
+        if(group==1)
+        printf("1\n");
+        else
+        printf("0\n");
+
+        for(i=0;i<=n;i++)
+        {
+            g[i].clear();
+            gr[i].clear();
+        }
+
+    }
+    return 0;
+}
